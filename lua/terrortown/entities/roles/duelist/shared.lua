@@ -44,7 +44,15 @@ if SERVER then
 
       if #tmp > 0 then
         local otherPly = tmp[math.random(1, #tmp)]
-        DUELIST.victory_role = otherPly:GetSubRole()
+        if GetConVar("ttt2_duelist_prize_type"):GetInt() == 2 and ROLE_UNDECIDED then
+          DUELIST.victory_role = ROLE_UNDECIDED
+        elseif GetConVar("ttt2_duelist_prize_type"):GetInt() == 1 then
+          local role_data_list = roles.GetList()
+          table.remove(role_data_list, ROLE_NONE)
+          DUELIST.victory_role = role_data_list[math.random(1, #role_data_list)].index
+        else
+          DUELIST.victory_role = otherPly:GetSubRole()
+        end
         otherPly:SetRole(ROLE_DUELIST)
 
         local duelists_names = {}
@@ -164,7 +172,7 @@ if SERVER then
   hook.Add("EntityTakeDamage", "DuelistTakeDamage", function(target, dmg_info)
     local attacker = dmg_info:GetAttacker()
 		if GetRoundState() ~= ROUND_ACTIVE or not IsValid(target) or not target:IsPlayer() or not IsValid(attacker) or not attacker:IsPlayer() then return end
-    if GetConVar("ttt2_duelist_immunity"):GetBool() and attacker:GetSubRole() == ROLE_DUELIST and target:GetSubRole() ~= attacker:GetSubRole() then 
+    if GetConVar("ttt2_duelist_immunity"):GetBool() and (target:GetSubRole() == ROLE_DUELIST or attacker:GetSubRole() == ROLE_DUELIST) and target:GetSubRole() ~= attacker:GetSubRole() then 
       dmg_info:SetDamage(0)
     end
   end)
@@ -212,6 +220,14 @@ if CLIENT then
     form:MakeCheckBox({
 			serverConvar = "ttt2_duelist_immunity",
 			label = "label_duelist_immunity"
+		})
+
+    form:MakeSlider({
+			serverConvar = "ttt2_duelist_prize_type",
+			label = "label_duelist_prize_type",
+			min = 0,
+			max = 2,
+			decimal = 0
 		})
 
 		form:MakeSlider({

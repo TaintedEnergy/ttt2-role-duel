@@ -1,6 +1,7 @@
 CreateConVar("ttt2_duelist_is_public", 0, {FCVAR_NOTIFY, FCVAR_ARCHIVE})
 CreateConVar("ttt2_duelist_prevent_win", 1, {FCVAR_NOTIFY, FCVAR_ARCHIVE})
 CreateConVar("ttt2_duelist_immunity", 0, {FCVAR_NOTIFY, FCVAR_ARCHIVE})
+CreateConVar("ttt2_duelist_prize_type", 0, {FCVAR_NOTIFY, FCVAR_ARCHIVE, FCVAR_REPLICATED})
 CreateConVar("ttt2_duelist_victory_regenerate", 200, {FCVAR_NOTIFY, FCVAR_ARCHIVE, FCVAR_REPLICATED})
 
 hook.Add("TTTUlxDynamicRCVars", "ttt2_ulx_dynamic_leech_convars", function(tbl)
@@ -23,6 +24,15 @@ hook.Add("TTTUlxDynamicRCVars", "ttt2_ulx_dynamic_leech_convars", function(tbl)
     checkbox = true,
     desc = "ttt2_duelist_immunity (def. 0)"
   })
+
+  table.insert(tbl[ROLE_DUELIST], {
+    cvar = "ttt2_duelist_prize_type",
+    slider = true,
+    min = 0,
+    max = 2,
+    decimal = 0,
+    desc = "ttt2_duelist_prize_type (def. 0)"
+})
 
   table.insert(tbl[ROLE_DUELIST], {
       cvar = "ttt2_duelist_victory_regenerate",
